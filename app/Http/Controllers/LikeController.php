@@ -6,6 +6,7 @@ use App\Models\Like;
 use App\Models\Statuses\UserStatus;
 use App\Models\Statuses\UserStatusComment;
 use App\Models\Users\User;
+use App\Notifications\Liked;
 use Illuminate\Http\Request;
 
 class LikeController extends Controller
@@ -26,13 +27,15 @@ class LikeController extends Controller
     public function handleLike($type, $id)
     {
         $existing_like = Like::withTrashed()->whereLikeableType($type)->whereLikeableId($id)->whereUserId(User::getUser()->id)->first();
-
+        $liked_content = $type::find($id);
+        $receiver = User::find($liked_content->origin_user_id);
         if (is_null($existing_like)) {
             Like::create([
                 'user_id'       => User::getUser()->id,
                 'likeable_id'   => $id,
                 'likeable_type' => $type,
             ]);
+            $receiver->notify(new Liked($liked_content));
         } else {
             if (is_null($existing_like->deleted_at)) {
                 $existing_like->delete();

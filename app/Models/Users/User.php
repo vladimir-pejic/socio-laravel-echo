@@ -6,11 +6,14 @@ namespace App\Models\Users;
 use App\Models\Statuses\UserStatus;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\Authenticatable as Auth;
+use Illuminate\Auth\Authenticatable as AuthenticableTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends \Cartalyst\Sentinel\Users\EloquentUser
+class User extends \Cartalyst\Sentinel\Users\EloquentUser implements Auth
 {
     use Notifiable;
+    use AuthenticableTrait;
 
     /**
      * The attributes that are mass assignable.

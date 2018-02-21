@@ -18,14 +18,16 @@
     <![endif]-->
 </head>
 <body style="margin-top: 70px">
-@include('includes.header')
-<div class="container"  id="app">
-    <div class="row">
-        @yield('content')
-    </div>
-</div>
 
-@include('includes.modals')
+<div id="app">
+    @include('includes.header')
+    <div class="container">
+        <div class="row">
+            @yield('content')
+        </div>
+    </div>
+    @include('includes.modals')
+</div>
 
 <script src="{{ asset('js/app.js') }}"></script>
 </body>

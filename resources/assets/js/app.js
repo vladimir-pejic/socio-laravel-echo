@@ -20,6 +20,8 @@ Vue.component('chat-message', require('./components/messages/ChatMessage.vue'));
 Vue.component('chat-log', require('./components/messages/ChatLog.vue'));
 Vue.component('chat-box', require('./components/messages/ChatBox.vue'));
 
+Vue.component('new-notifications', require('./components/notifications/NewNotifications.vue'));
+
 const app = new Vue({
     el: '#app',
     data: {
