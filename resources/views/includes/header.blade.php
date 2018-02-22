@@ -16,7 +16,7 @@
             </ul>
             <div class="navbar-nav">
                 <a class="nav-link" href="{{ route('home') }}"><i class="fa fa-home"></i> Home </a>
-                <a class="nav-link" href="{{ route('chat') }}"><i class="fa fa-comment-alt"></i> Chat </a>
+                <a class="nav-link" href="{{ route('chat.index') }}"><i class="fa fa-comment"></i> Chat </a>
                 <a class="nav-link" href="{{ route('messages.inbox') }}"><i class="fa fa-envelope"></i> Inbox </a>
                 <new-notifications :notifications="10"></new-notifications>
 

@@ -2,8 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Messages\Message;
-use App\Models\Users\User;
+use App\Models\Messages\ChatMessage;
 use Cartalyst\Sentinel\Users\EloquentUser;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
@@ -13,7 +12,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MessagePosted implements ShouldBroadcast
+class ChatMessagePosted implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -23,10 +22,10 @@ class MessagePosted implements ShouldBroadcast
     /**
      * Create a new event instance.
      *
-     * @param Message $message
+     * @param ChatMessage $message
      * @param EloquentUser $user
      */
-    public function __construct(Message $message, EloquentUser $user)
+    public function __construct(ChatMessage $message, EloquentUser $user)
     {
         //
         $this->message = $message;

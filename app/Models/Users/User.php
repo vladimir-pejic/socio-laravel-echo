@@ -62,6 +62,10 @@ class User extends \Cartalyst\Sentinel\Users\EloquentUser implements Auth
         return $this->morphedByMany('App\Models\Statuses\UserStatusComment', 'likeable')->whereDeletedAt(null);
     }
 
+    public function chat_messages() {
+        return $this->hasmany('App\Models\Messages\ChatMessage', 'user_id');
+    }
+
     public function messages() {
         return $this->hasmany('App\Models\Messages\Message', 'user_id');
     }

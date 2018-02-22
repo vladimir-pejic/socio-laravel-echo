@@ -31,16 +31,16 @@ const app = new Vue({
     methods: {
         addMessage(message) {
             // Add to existing messages
-            this.messages.push(message);
+            this.messages.unshift(message);
 
             // Persist to the database etc
-            axios.post('/messages/all', message).then(response => {
+            axios.post('/chat/all', message).then(response => {
                 // Do whatever;
             })
         }
     },
     created() {
-        axios.get('/messages/all').then(response => {
+        axios.get('/chat/all').then(response => {
             this.messages = response.data;
         });
 
@@ -54,8 +54,8 @@ const app = new Vue({
             .leaving((user) => {
                 this.usersInRoom = this.usersInRoom.filter(u => u != user)
             })
-            .listen('MessagePosted', (e) => {
-                this.messages.push({
+            .listen('ChatMessagePosted', (e) => {
+                this.messages.unshift({
                     message: e.message.message,
                     user: e.user
                 });

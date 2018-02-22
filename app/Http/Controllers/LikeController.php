@@ -27,15 +27,16 @@ class LikeController extends Controller
     public function handleLike($type, $id)
     {
         $existing_like = Like::withTrashed()->whereLikeableType($type)->whereLikeableId($id)->whereUserId(User::getUser()->id)->first();
-        $liked_content = $type::find($id);
-        $receiver = User::find($liked_content->origin_user_id);
+        $liked = $type::find($id);
+        $liked_by = User::getUser();
+        $receiver = User::find($liked->origin_user_id);
         if (is_null($existing_like)) {
             Like::create([
-                'user_id'       => User::getUser()->id,
+                'user_id'       => $liked_by->id,
                 'likeable_id'   => $id,
                 'likeable_type' => $type,
             ]);
-            $receiver->notify(new Liked($liked_content));
+            $receiver->notify(new Liked($liked, $liked_by));
         } else {
             if (is_null($existing_like->deleted_at)) {
                 $existing_like->delete();

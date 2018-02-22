@@ -14122,10 +14122,10 @@ var app = new Vue({
     methods: {
         addMessage: function addMessage(message) {
             // Add to existing messages
-            this.messages.push(message);
+            this.messages.unshift(message);
 
             // Persist to the database etc
-            axios.post('/messages/all', message).then(function (response) {
+            axios.post('/chat/all', message).then(function (response) {
                 // Do whatever;
             });
         }
@@ -14133,7 +14133,7 @@ var app = new Vue({
     created: function created() {
         var _this = this;
 
-        axios.get('/messages/all').then(function (response) {
+        axios.get('/chat/all').then(function (response) {
             _this.messages = response.data;
         });
 
@@ -14145,8 +14145,8 @@ var app = new Vue({
             _this.usersInRoom = _this.usersInRoom.filter(function (u) {
                 return u != user;
             });
-        }).listen('MessagePosted', function (e) {
-            _this.messages.push({
+        }).listen('ChatMessagePosted', function (e) {
+            _this.messages.unshift({
                 message: e.message.message,
                 user: e.user
             });
@@ -52424,15 +52424,15 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "chat-message" }, [
-    _c("p", [_vm._v(_vm._s(_vm.message.message))]),
-    _vm._v(" "),
     _c("small", [
       _vm._v(
         _vm._s(_vm.message.user.first_name) +
           " " +
           _vm._s(_vm.message.user.last_name)
       )
-    ])
+    ]),
+    _vm._v(" "),
+    _c("p", [_vm._v(_vm._s(_vm.message.message))])
   ])
 }
 var staticRenderFns = []
@@ -52846,11 +52846,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {},
-
     props: ['notifications'],
     methods: {
-        openNewNotifications: function openNewNotifications() {}
+        openNewNotifications: function openNewNotifications() {},
+        markSeen: function markSeen() {}
     }
 });
 
@@ -52869,8 +52868,12 @@ var render = function() {
       class: { "text-danger": _vm.notifications > 0 }
     },
     [
-      _c("i", { staticClass: "fa fa-bell" }),
-      _c("span", { staticClass: "badge" }, [_vm._v(_vm._s(_vm.notifications))])
+      _c("a", { attrs: { href: "#" } }, [
+        _c("i", { staticClass: "fa fa-bell" }),
+        _c("span", { staticClass: "badge" }, [
+          _vm._v(_vm._s(_vm.notifications))
+        ])
+      ])
     ]
   )
 }
