@@ -16,7 +16,7 @@ class CreateUserStatusCommentsTable extends Migration
         Schema::create('user_status_comments', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->integer('status_id');
-            $table->integer('user_id');
+            $table->integer('origin_user_id');
             $table->text('content');
             $table->string('attachment')->nullable();
             $table->timestamps();

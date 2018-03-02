@@ -9,11 +9,11 @@ class UserStatusComment extends Model
 {
     //
     protected $fillable = [
-        'status_id', 'user_id', 'content', 'attachment'
+        'status_id', 'origin_user_id', 'content', 'attachment'
     ];
 
     public function user() {
-        return $this->belongsTo('App\Models\Users\User', 'user_id');
+        return $this->belongsTo('App\Models\Users\User', 'origin_user_id');
     }
 
     public function likes()

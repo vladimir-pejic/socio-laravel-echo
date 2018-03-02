@@ -11,6 +11,8 @@
 |
 */
 
+use App\Models\Users\User;
+
 Route::get('/', function () {return view('welcome'); });
 
 Route::get('login', 'Auth\LoginController@login')->name('login');
@@ -18,6 +20,10 @@ Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('login', 'Auth\LoginController@loginUser')->name('login.user');
 
 Route::group(['middleware' => ['auth']], function () {
+
+    Route::get('logged_user', function() {
+        return User::getUser()->toJson();
+    });
 
     Route::get('home', 'HomeController@index')->name('home');
     Route::get('profile/{user_alias}', 'User\ProfileController@show')->name('profile');

@@ -2,8 +2,11 @@
 
 namespace App\Notifications;
 
+use App\Models\Like;
+use App\Models\Statuses\UserStatus;
 use App\Models\Users\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -12,19 +15,19 @@ class Liked extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $liked;
+    protected $like;
     protected $liked_by;
 
     /**
      * Create a new notification instance.
      *
-     * @param $liked
-     * @param $liked_by
+     * @param Like $like
+     * @param User $liked_by
      */
-    public function __construct($liked, User $liked_by)
+    public function __construct(Like $like, User $liked_by)
     {
         //
-        $this->liked = $liked;
+        $this->like = $like;
         $this->liked_by = $liked_by;
     }
 
@@ -39,28 +42,25 @@ class Liked extends Notification implements ShouldQueue
         return ['database', 'broadcast'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
-    public function toMail($notifiable)
-    {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
-    }
-
 
     public function toDatabase($notifiable)
     {
         return [
             'user_id' => $this->liked_by->id,
-            'user_status_content' => $this->liked_by->first_name . ' ' . $this->liked_by->last_name,
-            'user_status_id' => $this->liked->id,
+            'user_name' => $this->liked_by->first_name . ' ' . $this->liked_by->last_name,
+            'like' => $this->like->likeable_type,
+            'likeable_id' => $this->like->likeable_id
         ];
+    }
+
+    public function toBroadcast($notifiable)
+    {
+        return new BroadcastMessage([
+            'user_id' => $this->liked_by->id,
+            'user_name' => $this->liked_by->first_name . ' ' . $this->liked_by->last_name,
+            'like' => $this->like->likeable_type,
+            'likeable_id' => $this->like->likeable_id
+        ]);
     }
 
     /**
@@ -72,8 +72,10 @@ class Liked extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'content' => $this->liked->content,
-            'liked_by' => $this->liked_by->first_name . ' ' . $this->liked_by->last_name,
+            'user_id' => $this->liked_by->id,
+            'user_name' => $this->liked_by->first_name . ' ' . $this->liked_by->last_name,
+            'like' => $this->like->likeable_type,
+            'likeable_id' => $this->like->likeable_id
         ];
     }
 }

@@ -14116,12 +14116,13 @@ Vue.component('new-notifications', __webpack_require__(63));
 var app = new Vue({
     el: '#app',
     data: {
+        logged_user: '',
         messages: [],
         usersInRoom: []
     },
     methods: {
         addMessage: function addMessage(message) {
-            // Add to existing messages
+            // Add to existing messages to top
             this.messages.unshift(message);
 
             // Persist to the database etc
@@ -14132,6 +14133,11 @@ var app = new Vue({
     },
     created: function created() {
         var _this = this;
+
+        axios.get('/logged_user').then(function (response) {
+            _this.logged_user = response.data;
+            console.log(_this.logged_user.id);
+        });
 
         axios.get('/chat/all').then(function (response) {
             _this.messages = response.data;
@@ -14150,6 +14156,10 @@ var app = new Vue({
                 message: e.message.message,
                 user: e.user
             });
+        });
+
+        Echo.private('App.User.' + this.logged_user.id).notification(function (notification) {
+            console.log(notification.type);
         });
     }
 });
@@ -52844,10 +52854,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['notifications'],
+    props: ['unread_notifications', 'all_notifications'],
+    data: function data() {
+        return {
+            show_notifications: false
+        };
+    },
+
     methods: {
+        toggleNotifications: function toggleNotifications() {
+            if (this.show_notifications === false) this.show_notifications = true;else this.show_notifications = false;
+        },
         openNewNotifications: function openNewNotifications() {},
         markSeen: function markSeen() {}
     }
@@ -52861,21 +52890,52 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    {
-      staticClass: "nav-link",
-      class: { "text-danger": _vm.notifications > 0 }
-    },
-    [
-      _c("a", { attrs: { href: "#" } }, [
-        _c("i", { staticClass: "fa fa-bell" }),
-        _c("span", { staticClass: "badge" }, [
-          _vm._v(_vm._s(_vm.notifications))
-        ])
-      ])
-    ]
-  )
+  return _c("div", [
+    _c("div", { staticClass: "nav-link" }, [
+      _c(
+        "a",
+        {
+          class: _vm.unread_notifications.length > 0 ? "text-danger" : "",
+          attrs: { href: "#" },
+          on: {
+            click: function($event) {
+              _vm.toggleNotifications()
+            }
+          }
+        },
+        [
+          _c("i", { staticClass: "fa fa-bell" }),
+          _vm.unread_notifications.length > 0
+            ? _c("span", { staticClass: "badge text-danger" }, [
+                _vm._v(_vm._s(_vm.unread_notifications.length))
+              ])
+            : _vm._e()
+        ]
+      )
+    ]),
+    _vm._v(" "),
+    _vm.show_notifications
+      ? _c(
+          "div",
+          {
+            staticStyle: {
+              position: "absolute",
+              top: "40px",
+              width: "400px",
+              height: "500px",
+              "background-color": "white",
+              border: "1px solid darkgrey"
+            },
+            attrs: { id: "show-notifications" }
+          },
+          _vm._l(_vm.all_notifications, function(notification, key) {
+            return _c("div", [
+              _vm._v("\n            " + _vm._s(notification) + "\n        ")
+            ])
+          })
+        )
+      : _vm._e()
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

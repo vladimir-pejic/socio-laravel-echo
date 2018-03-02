@@ -18,10 +18,13 @@
                 <a class="nav-link" href="{{ route('home') }}"><i class="fa fa-home"></i> Home </a>
                 <a class="nav-link" href="{{ route('chat.index') }}"><i class="fa fa-comment"></i> Chat </a>
                 <a class="nav-link" href="{{ route('messages.inbox') }}"><i class="fa fa-envelope"></i> Inbox </a>
-                <new-notifications :notifications="10"></new-notifications>
+                <new-notifications
+                    :unread_notifications="{{ json_encode(User::getUser()->unreadNotifications) }}"
+                    :all_notifications="{{ json_encode(User::getUser()->notifications) }}">
+                </new-notifications>
 
-                <a class="nav-link" href="{{ route('profile', \App\Models\Users\User::getUser()->profile->profile_url ? \App\Models\Users\User::getUser()->profile->profile_url : \App\Models\Users\User::getUser()->uid) }}">
-                    <img src="/img/pic.jpg" width="25px" class="rounded-circle"> {{ \App\Models\Users\User::getUser()->first_name }} </a>
+                <a class="nav-link" href="{{ route('profile', User::getUser()->profile->profile_url ? User::getUser()->profile->profile_url : User::getUser()->uid) }}">
+                    <img src="/img/pic.jpg" width="25px" class="rounded-circle"> {{ User::getUser()->first_name }} </a>
                 <a class="nav-link" href="{{ route('logout') }}">Log out</a>
             </div>
 

@@ -25,12 +25,13 @@ Vue.component('new-notifications', require('./components/notifications/NewNotifi
 const app = new Vue({
     el: '#app',
     data: {
+        logged_user: '',
         messages: [],
         usersInRoom: []
     },
     methods: {
         addMessage(message) {
-            // Add to existing messages
+            // Add to existing messages to top
             this.messages.unshift(message);
 
             // Persist to the database etc
@@ -40,6 +41,12 @@ const app = new Vue({
         }
     },
     created() {
+
+        axios.get('/logged_user').then(response => {
+            this.logged_user = response.data;
+            console.log(this.logged_user.id);
+        });
+
         axios.get('/chat/all').then(response => {
             this.messages = response.data;
         });
@@ -59,6 +66,11 @@ const app = new Vue({
                     message: e.message.message,
                     user: e.user
                 });
+            });
+
+        Echo.private('App.User.'+ this.logged_user.id)
+            .notification((notification) => {
+                console.log(notification.type);
             });
     }
 });

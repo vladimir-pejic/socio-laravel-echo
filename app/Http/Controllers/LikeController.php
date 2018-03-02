@@ -31,17 +31,18 @@ class LikeController extends Controller
         $liked_by = User::getUser();
         $receiver = User::find($liked->origin_user_id);
         if (is_null($existing_like)) {
-            Like::create([
+            $like = Like::create([
                 'user_id'       => $liked_by->id,
                 'likeable_id'   => $id,
                 'likeable_type' => $type,
-            ]);
-            $receiver->notify(new Liked($liked, $liked_by));
+                ]);
+            $receiver->notify(new Liked($like, $liked_by));
         } else {
             if (is_null($existing_like->deleted_at)) {
                 $existing_like->delete();
             } else {
                 $existing_like->restore();
+                $receiver->notify(new Liked($existing_like, $liked_by));
             }
         }
     }

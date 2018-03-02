@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\Authenticatable as Auth;
 use Illuminate\Auth\Authenticatable as AuthenticableTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class User extends \Cartalyst\Sentinel\Users\EloquentUser implements Auth
 {
@@ -62,6 +63,17 @@ class User extends \Cartalyst\Sentinel\Users\EloquentUser implements Auth
         return $this->morphedByMany('App\Models\Statuses\UserStatusComment', 'likeable')->whereDeletedAt(null);
     }
 
+    // Format notifications
+    public function new_notifications() {
+//        foreach ($this->unreadNotifications() as $notification)
+
+    }
+
+    public function all_notifications() {
+        $this->notifications();
+    }
+
+    // Chat & Messages
     public function chat_messages() {
         return $this->hasmany('App\Models\Messages\ChatMessage', 'user_id');
     }
